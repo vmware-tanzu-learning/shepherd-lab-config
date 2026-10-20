@@ -27,3 +27,4 @@ opsman.key
 .idea/
 .vscode/
 *.swp
+.claude
