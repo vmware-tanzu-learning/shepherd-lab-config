@@ -1,0 +1,10 @@
+- type: replace
+  path: /resource-config/director/instance_type
+  value:
+    id: e2-standard-4.disk
+
+- type: replace
+  path: /resource-config/director/persistent_disk?
+  value:
+    name: "102400"
+    size_mb: "102400"

@@ -1,0 +1,29 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+.terraform.lock.hcl
+
+# Secrets and credentials
+*.key
+*.pem
+*.p12
+*.pfx
+*.env
+.env*
+kubeconfig*
+bosh_env.sh
+opsman.key
+
+# Runtime artifacts from scripts
+*.log
+*.tmp
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
