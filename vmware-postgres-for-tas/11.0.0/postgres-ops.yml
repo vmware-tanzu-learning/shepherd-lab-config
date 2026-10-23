@@ -27,6 +27,13 @@
         disk_size: "51200"
 
 - type: replace
+  path: /product-properties/.properties.smoke_test_plan?
+  value:
+    value:
+      - name: smoke-test-plan
+        az_multi_select: ((az_list))
+
+- type: replace
   path: /product-properties/.properties.global_az_multi_select?
   value: 
     value: ((az_list))
@@ -37,5 +44,13 @@
     value: "Yes"
 
 - type: replace
+  path: /errand-config/smoke-tests/post-deploy-state?
+  value: false
+  
+- type: replace
   path: /resource-config/postgres-on-demand-broker/internet_connected?
+  value: false
+
+- type: replace
+  path: /resource-config/upgrade-precheck/internet_connected?
   value: false

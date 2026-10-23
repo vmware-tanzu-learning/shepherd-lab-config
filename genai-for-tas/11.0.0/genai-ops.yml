@@ -1,14 +1,4 @@
 - type: replace
-  path: /product-properties/.properties.database_source.service_broker.name?
-  value: 
-    value: postgres
-
-- type: replace
-  path: /product-properties/.properties.database_source.service_broker.plan_name?
-  value: 
-    value: on-demand-postgres-db
-
-- type: replace
   path: /network-properties/network
   value:
     name: ((environment_tag))-pas-subnet
@@ -46,16 +36,6 @@
     install_nvidia_open_driver: false
 
 - type: replace
-  path: /product-properties/.properties.mcp_gateway_database.service_broker.offering?
-  value:
-    value: postgres
-
-- type: replace
-  path: /product-properties/.properties.mcp_gateway_database.service_broker.plan_name?
-  value:
-    value: on-demand-postgres-db
-
-- type: replace
   path: /product-properties/.errands.ollama_models?
   value:
     value:
@@ -72,7 +52,6 @@
         ollama_kv_cache_type: q4_0
         ollama_flash_attention: true
         ollama_load_timeout: 5m
-        azs: ((az_list))
         model_modelfile: PARAMETER temperature 0.3
       - model_name: nomic-embed-text
         name: nomic-embed-text

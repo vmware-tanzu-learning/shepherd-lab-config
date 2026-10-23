@@ -6,7 +6,7 @@
     "ops_files": ["postgres-ops.yml"],
     "certs": "false",
     "terraform": "false",
-    "nat_vm_tags": ["postgres-on-demand-broker"]
+    "nat_vm_tags": ["postgres-on-demand-broker", "upgrade-precheck"]
   },
   {
     "name": "genai",

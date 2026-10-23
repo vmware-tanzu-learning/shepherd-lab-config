@@ -95,7 +95,15 @@ export KUBECONFIG=${KUBECONFIG}
 
 echo "Setting Hub admin user password to non expiring..."
 
-kubectl -n tanzusm exec postgresql-0 -c pg-container -- \
+# The postgres pod name is dynamic (e.g. postgresql-0, postgres-<random>-0), so discover it
+POSTGRES_POD=$(kubectl -n tanzusm get pods -o name | sed 's|^pod/||' | grep -E '^postgres.*-0$' | head -n 1)
+if [ -z "${POSTGRES_POD}" ]; then
+    echo "Error: could not find a postgres pod in namespace tanzusm" >&2
+    exit 1
+fi
+echo "Using postgres pod: ${POSTGRES_POD}"
+
+kubectl -n tanzusm exec "${POSTGRES_POD}" -c pg-container -- \
     psql -d uaa -c "update users set passwd_change_required = false where username = '${HUB_ADMIN_USER}'"
 
 # Make Tanzu Hub embeddable in a cross-site iframe (Educates workshops)
@@ -173,24 +181,24 @@ om configure-product \
 retry om apply-changes -n hub-tas-collector
 
 # Parse the certs required for ERT log collection config
-opsman_root_ca=$(om certificate-authorities --format json | jq -r '.[0].cert_pem')
-otel_agent_cert=$(om credentials --product-name hub-tas-collector --credential-reference .properties.collector_mtls --credential-field cert_pem)
-otel_agent_key=$(om credentials --product-name hub-tas-collector --credential-reference .properties.collector_mtls --credential-field private_key_pem)
-log_store_cert=$(om credentials --product-name hub-tas-collector --credential-reference .logs-store.logs_store_mtls --credential-field cert_pem)
-log_store_key=$(om credentials --product-name hub-tas-collector --credential-reference .logs-store.logs_store_mtls --credential-field private_key_pem)
+#opsman_root_ca=$(om certificate-authorities --format json | jq -r '.[0].cert_pem')
+#otel_agent_cert=$(om credentials --product-name hub-tas-collector --credential-reference .properties.collector_mtls --credential-field cert_pem)
+#otel_agent_key=$(om credentials --product-name hub-tas-collector --credential-reference .properties.collector_mtls --credential-field private_key_pem)
+#log_store_cert=$(om credentials --product-name hub-tas-collector --credential-reference .logs-store.logs_store_mtls --credential-field cert_pem)
+#log_store_key=$(om credentials --product-name hub-tas-collector --credential-reference .logs-store.logs_store_mtls --credential-field private_key_pem)
 
 # Generate the staged config for the ERT tile
-om staged-config -p cf > cf-original.yml || true
+#om staged-config -p cf > cf-original.yml || true
 
 # Configure ERT with logging config
-om configure-product --config cf-original.yml --ops-file $CONFIG_DIR/${PRODUCT_SLUG}/${PRODUCT_VERSION}/scripts/cf-ops.yml \
-  --var opsman_root_ca="${opsman_root_ca}" \
-  --var otel_agent_cert="${otel_agent_cert}" \
-  --var otel_agent_key="${otel_agent_key}" \
-  --var log_store_cert="${log_store_cert}" \
-  --var log_store_key="${log_store_key}"
+#om configure-product --config cf-original.yml --ops-file $CONFIG_DIR/${PRODUCT_SLUG}/${PRODUCT_VERSION}/scripts/cf-ops.yml \
+#  --var opsman_root_ca="${opsman_root_ca}" \
+#  --var otel_agent_cert="${otel_agent_cert}" \
+#  --var otel_agent_key="${otel_agent_key}" \
+#  --var log_store_cert="${log_store_cert}" \
+#  --var log_store_key="${log_store_key}"
 
 # Apply changes
-retry om apply-changes -n cf
+#retry om apply-changes -n cf
 
 echo "Script completed successfully!" >&2

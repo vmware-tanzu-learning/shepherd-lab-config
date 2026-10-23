@@ -20,6 +20,11 @@
       password: ((tpst_client_secret))
 
 - type: replace
+  path: /product-properties/.properties.instance_id?
+  value: 
+    value: ((foundation_id))
+
+- type: replace
   path: /product-properties/.properties.collector_id?
   value: 
     value: ((collector_id))
@@ -87,6 +92,16 @@
 
 - type: replace
   path:  /product-properties/.properties.ear_platform_logs_forwarding.forward.log_type?
+  value:
+    value: ALL
+
+- type: replace
+  path:  /product-properties/.properties.ear_app_forwarding.forward.log_type?
+  value:
+    value: ALL
+
+- type: replace
+  path:  /product-properties/.properties.ear_service_logs_forwarding.forward.log_type?
   value:
     value: ALL
 
