@@ -2,6 +2,7 @@
 
 export HUB_ADMIN_USER="tanzu_platform_admin"
 export HUB_HOSTNAME="hub.${ENV_NAME}.cf-app.com"
+export HUB_REGION="tanzu-academy"
 export EARUAA_TARGET="https://login.sys.${ENV_NAME}.cf-app.com"
 
 export TPST_CLIENT_ID="tpst-client"
@@ -143,8 +144,11 @@ COLLECTOR_VERSIONS=$(om available-products --format json | jq '.[] | select(.nam
 COLLECTOR_VERSION=$(echo "${COLLECTOR_VERSIONS}" | sort | tail -1)
 om stage-product --product-name hub-tas-collector --product-version ${COLLECTOR_VERSION}
 
+# Create Tanzu Hub region
+th -k region create --name ${HUB_REGION}
+
 # Perform manual foundation attach to get required configuration for the Platform Services tile
-ATTACH_FOUNDATION_RESPONSE=$(th -k foundation attach manual --name ${COLLECTOR_NAME} -o json)
+ATTACH_FOUNDATION_RESPONSE=$(th -k foundation attach manual --name ${COLLECTOR_NAME} --region ${HUB_REGION} -o json)
 
 # Parse the ATTACH_FOUNDATION_RESPONSE JSON structure
 collector_id=$(echo ${ATTACH_FOUNDATION_RESPONSE} | jq -r '."collector-id"')
@@ -155,6 +159,7 @@ oauth_client_id=$(echo ${ATTACH_FOUNDATION_RESPONSE} | jq -r '."oauth-app-id"')
 oauth_client_secret=$(echo ${ATTACH_FOUNDATION_RESPONSE} | jq -r '."oauth-app-secret"')
 cert_bundle=$(echo ${ATTACH_FOUNDATION_RESPONSE} | jq -r '.caBundle')
 foundation_name=$(echo ${ATTACH_FOUNDATION_RESPONSE} | jq -r '.foundationName')
+region_name=$(echo ${ATTACH_FOUNDATION_RESPONSE} | jq -r '.region')
 
 # Generate the original config for the Platform Services tile
 om staged-config -p hub-tas-collector > hub-tas-collector-original.yml
