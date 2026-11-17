@@ -136,7 +136,7 @@ COLLECTOR_VERSION=$(echo "${COLLECTOR_VERSIONS}" | sort | tail -1)
 om stage-product --product-name hub-tas-collector --product-version ${COLLECTOR_VERSION}
 
 # Perform manual foundation attach to get required configuration for the Platform Services tile
-ATTACH_FOUNDATION_RESPONSE=$(th -k foundation attach manual --name ${COLLECTOR_NAME} -o json)
+ATTACH_FOUNDATION_RESPONSE=$(th -k foundation attach manual --name ${COLLECTOR_NAME} --legacy -o json)
 
 # Parse the ATTACH_FOUNDATION_RESPONSE JSON structure
 collector_id=$(echo ${ATTACH_FOUNDATION_RESPONSE} | jq -r '."collector-id"')
